@@ -14,6 +14,7 @@ html {
 body {
   width:100%;
   height:100%;
+  font-family: 'SDSamliphopangche_Outline';
 }
 
 div {
@@ -166,4 +167,22 @@ div {
 #keeploginText {
   font-size : 15px;
   color : blue;
+}
+
+.navbar {
+  background-color: #22AADD;
+  padding: 10px;
+  height: 50px; 
+  width: 100%;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.navlist {
+  /* 수평 배치 */
+  color : #EFEFEF;
+  font-size : 120%;
+  font-weight : 700;
+  float: left; 
+  padding-left :1%;
+  margin-Left: 1%;
 }

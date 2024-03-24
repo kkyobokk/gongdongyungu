@@ -277,7 +277,7 @@ function Signup(){
         CheckPss : e => {
             setInfos(() => {
                 const res = {...infos};
-                res.checkPss = res.pss = {
+                res.checkPss = {
                     hashed:SHA256(e.target.value).toString(),
                     length:e.target.value.length
                 };

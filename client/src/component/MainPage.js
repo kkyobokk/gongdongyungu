@@ -9,6 +9,7 @@ export default function MainPage(){
     return (
         <div style={{width:"100%"}}>
             <Navbar/>
+            <div className="site"></div>
         </div>
     )
 }

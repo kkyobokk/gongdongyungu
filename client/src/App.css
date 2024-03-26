@@ -186,3 +186,11 @@ div {
   padding-left :1%;
   margin-Left: 1%;
 }
+
+.site {
+  width : 300px;
+  background-color: #FFFFFF;
+  height : 30%;
+  border-radius: 30px;
+  margin : auto auto;
+}

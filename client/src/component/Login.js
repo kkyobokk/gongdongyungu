@@ -88,6 +88,7 @@ const Login = function() {
           <h1 style={{
             color:"#FFDEEE",
             textShadow : "0px 2px 4px gray",
+            fontWeight:"700",
             }}>List<br/>Manage</h1>
         </div>
         <br/>
@@ -99,16 +100,15 @@ const Login = function() {
           <div id="sub" className="postele" 
             onClick={sendIDandPassword}> login </div>
         </div>
-      </div>
 
-      <div className="keeplogin">
-        <label style={{"display":"inline-block"}}>
-          <span id="keeploginText"> to keep login </span>
-          <input onClick = {getToKeepLogin} type="checkbox"/>  
-        </label>
-        
-      </div>
+        <div className="keeplogin">
+          <label style={{"display":"inline-block"}}>
+            <span id="keeploginText"> to keep login </span>
+            <input onClick = {getToKeepLogin} type="checkbox"/>  
+          </label>
+        </div>
 
+      </div>
       </div>
   )
 }

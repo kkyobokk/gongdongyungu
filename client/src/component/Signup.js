@@ -47,7 +47,7 @@ function Signup(){
                 border : 'solid 1px #000000',
                 width : '100px',
                 height : "70%",
-                lineHeight : "20px",
+                lineHeight : "30px",
                 borderRadius : "5px",
                 backgroundColor : "#CCCCCC"
             },
@@ -295,12 +295,13 @@ function Signup(){
                 <h1 style={{
                 color:"#FFDEEE",
                 textShadow : "0px 2px 4px gray",
+                fontWeight:"700",
                 }}>Sign Up</h1>
             </div> 
 
             <div id="signup">
                 {sequence.map(e => {
-                    return <div className="signupele" key = {e.type}>        
+                    return <div className="signupele" style={{}} key = {e.type}>        
                         <div className = "signuptbLabel"> 
                             <div className="signuptbLabelele">
                                 {e.label}

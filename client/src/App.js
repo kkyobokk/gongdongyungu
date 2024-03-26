@@ -1,7 +1,7 @@
 import {BrowserRouter, Routes, Route, useNavigate} from 'react-router-dom';
 import Login from './component/Login';
 import SignUp from './component/Signup';
-import MainPage from './component/MainPage';
+import MainPage from './component/BundlePage';
 import Notfound from './component/Notfound';
 import './App.css';
 

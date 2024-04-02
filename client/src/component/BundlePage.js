@@ -1,29 +1,26 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { BrowserRouter, useNavigate, Routes, Route, useLocation } from 'react-router-dom';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 //import { Navbar, Nav, Container } from 'react-bootstrap';
 import Navbar from "./Navbar.js";
+import MainPage from "./Pages/MainPage.js";
+import Freepage from "./Pages/FreePage.js";
 import '../App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-export default function MainPage(){
+export default function BundlePage(){
 
     const location = useLocation();
     const query = new URLSearchParams(location.search);
     const nowBoard = query.get('board');
-    const PageObejct = {
+    const PageObejct = useMemo(() => {
+        return {
         main : (
-            <div className="site">
-                <div style={{textAlign:"center", width : "90%", margin : "auto auto",
-                fontWeight:"700", lineHeight:"40px", fontSize : "18px",
-                borderBottom : "solid #000000 3px"}}>
-                    자유 게시판
-                </div>
-            </div>),
-
+            <MainPage/>
+        )
+            ,
         free : (
-        <div>
-            Hello Free Page
-        </div>),
+            <Freepage/>
+        ),
 
         quest : (
         <div>
@@ -34,7 +31,7 @@ export default function MainPage(){
         <div>
             Hello R
         </div>)
-    }
+}}, [])
 
     
     useEffect(()=>{

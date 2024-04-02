@@ -33,12 +33,20 @@ function Signup(){
 
 
     const [infos, setInfos] = useState({
+        body : '',
         id : '',
         pss : '',
         checkPss : '',
     });
 
     const [sequence, setSequence] = useState([
+        {
+            type : 'Name',
+            style : {},
+            label : 'Name',
+            text: "",
+            onclickFunc : () => {}
+        },
         {
             type : 'Id',
             style : {
@@ -83,7 +91,8 @@ function Signup(){
             label : "Check Password",
             text : "",
             onclickFunc : () => {}
-        }
+        },
+ 
     ])
     
     const [signupBtn, setSignupBtn] = useState({
@@ -150,7 +159,7 @@ function Signup(){
     useEffect(() => {
         setSequence(() => {
             const res = [...sequence];
-            res[2].text = infos.pss !== '' && infos.checkPss !== '' ? infos.pss === infos.checkPss ? '비밀번호가 일치합니다' : '비밀번호가 불일치합니다' : '';
+            res[3].text = infos.pss.length !== 0 && infos.length !== 0 ? infos.pss.hashed === infos.checkPss.hashed ? '비밀번호가 일치합니다' : '비밀번호가 불일치합니다' : '';
             return res;
         })
     }, [infos])
@@ -166,6 +175,7 @@ function Signup(){
             body : JSON.stringify({
                 "id" : infos.id,
                 "pss" : infos.pss,
+                "name" : infos.name,
             }),
             credentials: "include",
         })
@@ -201,8 +211,8 @@ function Signup(){
             setIsNotDuplicated(() => Object({bool : null, id : null}))
             setSequence(() => {
                 const res = [...sequence];
-                res[0].text = "중복확인";
-                res[0].style = {...res[0].style, backgroundColor : "#CCCCCC"}
+                res[1].text = "중복확인";
+                res[1].style = {...res[1].style, backgroundColor : "#CCCCCC"}
                 return res;
             });
         }
@@ -230,8 +240,8 @@ function Signup(){
                 });
                 setSequence(() => {
                     const ret = [...sequence];
-                    ret[0].text = res.isNotDuplicated ? "사용 가능" : "사용 불가";
-                    ret[0].style = {...ret[0].style, backgroundColor : res.isNotDuplicated ? "#55CC99" : "#CC5555"};
+                    ret[1].text = res.isNotDuplicated ? "사용 가능" : "사용 불가";
+                    ret[1].style = {...ret[1].style, backgroundColor : res.isNotDuplicated ? "#55CC99" : "#CC5555"};
                     return ret;
                 });
                 setIsNotDuplicated(() => {return {bool : res.isNotDuplicated, id : infos.id}});
@@ -257,6 +267,13 @@ function Signup(){
 
     const getFunction = useMemo(() => {
         return { 
+        Name : (e) => {
+            setInfos(() => {
+                const res = {...infos};
+                res.name = e.target.value;
+                return res;
+            })
+        },
         Id : (e) => {
             setInfos(() => {
                 const res = {...infos};
@@ -284,7 +301,7 @@ function Signup(){
                 return res;
             })
         }}
-    },[infos])
+    }, [infos])
 
     
 

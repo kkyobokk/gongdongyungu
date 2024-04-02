@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 import { Button } from 'react-bootstrap';
 import { SHA256 } from 'crypto-js';
 import '../App.css';
@@ -7,6 +8,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Login = function() {
   const navigate = useNavigate();
+  const [cookie, setCookie, removeCookie ] = useCookies(['id']);
 
   const [pss, setPss] = useState('');
   const [id, setId] = useState('');
@@ -55,8 +57,9 @@ const Login = function() {
         else {
           sessionStorage.setItem("loggedin", res.Loggedin)
           localStorage.setItem('token', res.token);
+          setCookie('id', SHA256(id));
           alert("Login Success");
-          navigate(`/list/${id}`);
+          navigate(`/test`);
         }
       }
       else {

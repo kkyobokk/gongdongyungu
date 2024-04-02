@@ -125,31 +125,9 @@ app.post("/login", function (req, res) {
 
 app.post("/login/session", (req, res) => {
   try {
-    const req_id = sha256(sha256(req.body.id));
-    const res_id = req.session.hashid;
     const token = req.headers.authorization;
-
-    if(token !== undefined && token !=="undefined") {
-      jwt.verify(token, secretKey, (err, decodedToken)=>{
-        if(err){
-          console.log(err);
-          res.json({Err : true, ErrMessage : err, LoggedIn : false});
-        }
-        else if(req_id === decodedToken.id){
-          req.session.hashid = sha256(req.body.id);
-          req.session.Loggedin = true;
-          res.json({Err : false, Errmessage : null, LoggedIn : true});
-        }
-        else {
-          res.json({Err : false, ErrMessage : "Invaild Token", LoggedIn : false});
-        }
-      })
-    }
-    else{
-      const loggedin = req.session.Loggedin && res_id===req_id;
-      res.json({Err : false, ErrMessage : null, LoggedIn : loggedin});
-    }
-    
+    const loggedin = req.session.Loggedin;
+    res.json({Err : false, ErrMessage : null, LoggedIn : loggedin});
   }
   catch(err) {
     console.log(err);
@@ -165,6 +143,7 @@ app.post("/signup/toSignUp", function (req, res) {
     const pss = sha256(req.body.pss).toString(16);
     const salt = crypto.randomBytes(64).toString('base64');
     const password = sha256(`${pss}:${salt}`).toString('base64');
+    const name = req.body.name;
 
     const signUpPath = path.join(__dirname,'database',customHash(id), id)
     
@@ -174,6 +153,7 @@ app.post("/signup/toSignUp", function (req, res) {
    
     fs.writeFile(path.join(signUpPath, `userInfo.json`), 
       JSON.stringify({
+        name : name,
         saltedPassword : password,
         salt : salt,
       }), 

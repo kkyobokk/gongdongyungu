@@ -8,15 +8,15 @@ const Navbar = ()=>{
     const [loggedIn, setLoggedIn] = useState(false);
     const [ cookie, setCookie, removeCooki ] = useCookies(['id']);
 
+    /*
     useEffect(() => {
-        
         fetch('https://localhost:8080/login/session', {
             method : "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body : {
-                'id' : cookie.id.value,
+                'id' : cookie.id,
             },
             credentials : "include",
         })
@@ -36,6 +36,7 @@ const Navbar = ()=>{
             console.log(err);
         });
     }, [])
+    */
 
     return (
         <nav className="navbar">

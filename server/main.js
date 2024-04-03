@@ -191,6 +191,45 @@ app.post("/signup/checkId", function(req, res){
 });
 
 
+app.post("/getBoard/:query", (req, res) => {
+  const board = req.params.query;
+  fs.readdir(path.join(".", "database", "Contents", board), (err, files) => {
+    const ret = [];
+    if(!err){
+      files.forEach((e) => {
+        ret.push(JSON.parse(fs.readFileSync(path.join(".", "database", "Contents", board, e))));
+      });
+      res.json({Err : false, ErrMessage : "None", contents : ret});
+    }
+    else res.json({Err : true, ErrMessage : err, contents : []});
+  })
+});
+
+
+app.post("/write/:board", (req, res) => {
+  const board = req.params.board;
+  const contents = req.body.contents;
+  fs.writeFile(path.join(".", "database", "Contents", board, sha256), 
+  JSON.stringify({
+    title : contents.title, 
+    content : contents.body, 
+    date : JSON.stringify(new Date()), 
+    recommended : 0, 
+    chat : {}, 
+    author : null
+  }), 
+  (err) => {
+    if(err){
+      
+    }
+    else {
+      console.log(err);
+      res.json({Err : true, ErrMessage : err, Written : false});
+    }
+  });
+})
+
+
 
 
 app.get('*', function (req, res) {

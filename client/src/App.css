@@ -225,3 +225,91 @@ div {
   display : flex;
   background-color: #FFFFFF;
 }
+
+.boardComponent {
+  width : 70%;
+  height : 120px;
+  border-bottom: #000000 solid 3px;
+  margin : 0 auto;
+  font-size : 20px;
+  text-align : left;
+  padding-left : 20px;
+  padding-top : 10px;
+}
+
+.bc_title:hover{
+  cursor : pointer;
+}
+
+.bc_title {
+  font-weight: 700;
+  font-size : 25px;
+}
+
+.bc_infos {
+  display : flex;
+  flex-direction: row;
+  margin-top : 30px;
+  margin-left : 0px;
+  gap : 20px;
+  font-size : 15px;
+}
+
+.appendBtn {
+  width : 150px;
+  height : 60px;
+  background-color: #00AAFF;
+  border-radius: 30px;
+  border : 0px;
+  font-weight : 700;
+  font-size : 30px;
+  color : #FFFFFF;
+  text-align : center;
+  line-height: 20px;
+  margin : auto 0;
+  margin-left : auto;
+}
+
+.loadPage {
+display : flex;
+width : 100%;
+height : 100%;
+padding-top : 30px;
+flex-direction: column;
+}
+
+.boardNameIndicate {
+  font-size : 50px;
+  font-weight: 700;
+  height : 100px;
+  width : 70%;
+  line-height: 80px;
+  padding-left : 2%;
+  margin : 0 auto;
+  border-bottom : #000000 solid 5px;
+  display : flex;
+}
+
+.postWrite {
+  width : 70%;
+  height : 60%;
+  margin : 0 auto;
+  resize: none;
+  font-size : 18px;
+  padding : 18px;
+}
+
+.postWrite_label {
+  width : 70%;
+  height : 100px;
+  margin : 0 auto;
+  margin-bottom: 50px;
+  font-size : 25px;
+}
+
+.postWrite_title {
+  width : 100%;
+  height : 50px;
+  margin : 0 auto;
+  font-size : 25px;
+}

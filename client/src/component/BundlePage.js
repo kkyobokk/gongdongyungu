@@ -12,6 +12,7 @@ export default function BundlePage(){
     const location = useLocation();
     const query = new URLSearchParams(location.search);
     const nowBoard = query.get('board');
+    
     const PageObejct = useMemo(() => {
         return {
         main : (
@@ -31,7 +32,7 @@ export default function BundlePage(){
         <div>
             Hello R
         </div>)
-}}, [])
+    }}, [])
 
     
     useEffect(()=>{
@@ -41,7 +42,7 @@ export default function BundlePage(){
     return (
         <div style={{width:"100%"}}>
             <Navbar/>
-            {PageObejct[nowBoard !== null ? nowBoard : 'main']}
+            {(PageObejct[nowBoard !== null ? nowBoard : 'main'])}
 
         </div>
     )

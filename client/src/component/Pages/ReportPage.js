@@ -1,12 +1,22 @@
 import React from 'react';
-import {} from 'react-router-dom';
-import '../App.css';
+import { useLocation } from 'react-router-dom';
+import LoadPage from './LoadPage';
+import PostBoard from './PostBoard';
+import '../../App.css';
 
-export default function ReportPage(){
+export default function FreePage(){
+    const location = useLocation();
+    const query = new URLSearchParams(location.search);
+    const doWrite = query.get('write');
     
     return (
-        <div>
-            
+        <div className="page">
+            {
+                doWrite==="true" ?
+                <PostBoard /> 
+                :
+                <LoadPage />
+            }
         </div>
     )
 }

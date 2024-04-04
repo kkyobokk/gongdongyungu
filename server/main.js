@@ -209,18 +209,19 @@ app.post("/getBoard/:query", (req, res) => {
 app.post("/write/:board", (req, res) => {
   const board = req.params.board;
   const contents = req.body.contents;
-  fs.writeFile(path.join(".", "database", "Contents", board, sha256), 
-  JSON.stringify({
-    title : contents.title, 
+  const file = {
+    title : contents.title,
     content : contents.body, 
-    date : JSON.stringify(new Date()), 
+    date : new Date(), 
     recommended : 0, 
     chat : {}, 
     author : null
-  }), 
+  }
+  fs.writeFile(path.join(".", "database", "Contents", board, `${sha256(JSON.stringify(file))}.json`), 
+  JSON.stringify(file), 
   (err) => {
-    if(err){
-      
+    if(!err){
+      res.json({Err : false, ErrMessage : "None", Written : true});
     }
     else {
       console.log(err);

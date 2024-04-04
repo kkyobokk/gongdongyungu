@@ -12,7 +12,7 @@ export default function LoadPage(){
     const boardName = {
         free : "자유 게시판",
         quest : "질문 게시판",
-        reqpoert : "건의 게시판"
+        report : "건의 게시판"
     }
 
     useEffect(() => {
@@ -36,13 +36,16 @@ export default function LoadPage(){
         });
     }, [nowBoard]);
 
+    const navigatePost = () => {
+        navigate(`/test?board=${nowBoard}&write=true`);
+    }
 
 
     return (
         <div className="loadPage">
             <div className="boardNameIndicate"> 
             {boardName[nowBoard]} 
-                <button className="appendBtn"> Post </button>
+                <button className="appendBtn" onClick={navigatePost}> Post </button>
             </div>
             {
                 [...board].map((e,i) => {
@@ -51,7 +54,7 @@ export default function LoadPage(){
                     <div className="boardComponent">
                         <div className="bc_title"> {e.title} </div>
                         <div className="bc_infos">
-                            {[e.author, e.date.slice(0, 10), '개추 '+e.recommended]
+                            {[e.author, e.date.slice(0, 10), '개추 '+e.recommended, "댓글 수 "+Object.keys(e.chat).length]
                             .map(e => {
                                 return <div> {e} </div>
                             }) }

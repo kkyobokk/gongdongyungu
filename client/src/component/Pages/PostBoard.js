@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function PostBoard(){
+    const navigate = useNavigate();
     const location = useLocation();
     const query = new URLSearchParams(location.search);
     const nowBoard = query.get('board');
@@ -42,17 +43,23 @@ for(int i = 0; i< N; i++)
             headers: {
                 "Content-Type": "application/json",
             },
-            body : {
-                'contents' : contents,
-                'id' : null,
-            },
+            body : JSON.stringify({
+                "id" : null,
+                "contents" : contents,
+            }),
             credentials : "include",
         })
         .then(res => res.json())
         .then(res => {
-
+            if(res.Written){
+                alert("Writeing Success");
+                navigate(`/test?board=${nowBoard}`);
+            }
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            setRequire(() => false);
+            console.log(err)
+        });
 
     }, [require])
 

@@ -70,8 +70,10 @@ for(int i = 0; i< N; i++)
                     제목 <input onChange={getTitle} className="postWrite_title" placeholder="제목을 입력해주세요"></input></label>
                 <textarea onChange={getBody} className="postWrite" placeholder="Invaild Access">
                 </textarea>
-                <button className="appendBtn" onClick={postContents}
-                style={{height : "40px", fontSize:"24px", margin : "0 auto", marginTop : "20px"}}> Post </button>
+                <div style={{width : "70%", margin : "0 auto", height : "10%", display:"flex"}}>
+                   <button className="appendBtn" onClick={postContents}
+                    style={{height : "40px", fontSize:"24px", marginLeft : "auto"}}> Post </button>
+                </div>
             </div>
         </div>
     );

@@ -33,6 +33,10 @@ const Login = function() {
   }
 
   useEffect(() => {
+    console.log(SHA256(id).toString());
+  })
+
+  useEffect(() => {
     if(!isRequired) return;
 
     fetch("https://localhost:8080/login", {
@@ -57,7 +61,7 @@ const Login = function() {
         else {
           sessionStorage.setItem("loggedin", res.Loggedin)
           localStorage.setItem('token', res.token);
-          setCookie('id', SHA256(id));
+          setCookie('id', SHA256(id).toString());
           alert("Login Success");
           navigate(`/test`);
         }

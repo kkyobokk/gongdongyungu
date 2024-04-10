@@ -13,12 +13,15 @@ const fs = require("fs");
 const path = require("path");
 const crypto = require('crypto');
 const jwt = require("jsonwebtoken");
+const cryptojs = require("crypto-js");
 
 const secretKey = "temporary secret key";
 
+const SHA256 = cryptojs.SHA256;
+
 const sha256 = function(e){
   const req = e.toString();
-  return crypto.createHash('sha256').update(req).digest('base64')
+  return crypto.createHmac('sha256').update(req, secretKey).digest('base64')
           .toString().replace(/[/]/g, '_');
 }
 
@@ -73,9 +76,9 @@ app.use(express.static(path.join(__dirname, '../client/build')));
 
 app.post("/login", function (req, res) {
   try {
-    const id = sha256(req.body.id);
+    const id = sha256(SHA256(req.body.id));
     const pss = sha256(req.body.pss);
-    const Path = path.join(__dirname, 'database', customHash(id), id, 'userInfo.json'); 
+    const Path = path.join(__dirname, 'database', "User", customHash(id), id, 'userInfo.json'); 
     console.log(id);
     if(!fs.existsSync(Path)){
       res.json({Err : 4001, ErrMessage : "Invalid Id", LoggedIn : false});
@@ -125,8 +128,10 @@ app.post("/login", function (req, res) {
 
 app.post("/login/session", (req, res) => {
   try {
+    const id = SHA256(req.body.id);
+    const hashid = req.session.hashid;
     const token = req.headers.authorization;
-    const loggedin = req.session.Loggedin;
+    const loggedin = req.session.Loggedin && hashid === sha256(id).toString();
     res.json({Err : false, ErrMessage : null, LoggedIn : loggedin});
   }
   catch(err) {
@@ -139,13 +144,13 @@ app.post("/login/session", (req, res) => {
 
 app.post("/signup/toSignUp", function (req, res) {
   try {
-    const id = sha256(req.body.id).toString(16);
+    const id = sha256(SHA256(req.body.id)).toString(16);
     const pss = sha256(req.body.pss).toString(16);
     const salt = crypto.randomBytes(64).toString('base64');
     const password = sha256(`${pss}:${salt}`).toString('base64');
     const name = req.body.name;
 
-    const signUpPath = path.join(__dirname,'database',customHash(id), id)
+    const signUpPath = path.join(__dirname,'database', "User", customHash(id), id)
     
     if(!fs.existsSync(signUpPath)) {
       fs.mkdirSync(signUpPath,  { recursive : true });
@@ -181,7 +186,7 @@ app.post("/signup/checkId", function(req, res){
   try {
     const id = sha256(req.body.id).toString(16);
     const dir = customHash(id);
-    const isDuplicated = fs.existsSync(path.join(__dirname, "database", dir, id));
+    const isDuplicated = fs.existsSync(path.join(__dirname, "database", "User", dir, id));
     res.json({Err : false, ErrMessage : null, isNotDuplicated : !isDuplicated});
   }
   catch (err) {
@@ -209,14 +214,16 @@ app.post("/getBoard/:query", (req, res) => {
 app.post("/write/:board", (req, res) => {
   const board = req.params.board;
   const contents = req.body.contents;
+  const name = req.body.name;
   const file = {
     title : contents.title,
     content : contents.body, 
     date : new Date(), 
     recommended : 0, 
-    chat : {}, 
-    author : null
+    chat : {},
+    author : name,
   }
+
   fs.writeFile(path.join(".", "database", "Contents", board, `${sha256(JSON.stringify(file))}.json`), 
   JSON.stringify(file), 
   (err) => {

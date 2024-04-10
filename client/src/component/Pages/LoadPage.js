@@ -8,6 +8,7 @@ export default function LoadPage(){
     const location = useLocation();
     const query = new URLSearchParams(location.search);
     const nowBoard = query.get('board');
+    const [loggedin, setLoggedin] = useState(sessionStorage.getItem("loggedin"));
     const [board, setBoard] = useState([]);
     const boardName = {
         free : "자유 게시판",
@@ -43,6 +44,7 @@ export default function LoadPage(){
 
     return (
         <div className="loadPage">
+            {loggedin ? 'true' : 'false'}
             <div className="boardNameIndicate"> 
             {boardName[nowBoard]} 
                 <button className="appendBtn" onClick={navigatePost}> Post </button>
@@ -51,12 +53,12 @@ export default function LoadPage(){
                 [...board].map((e,i) => {
                     console.log(e);
                     return (
-                    <div className="boardComponent">
-                        <div className="bc_title"> {e.title} </div>
+                    <div className="boardComponent" key = {`${e.title}`}>
+                        <div className="bc_title" > {e.title} </div>
                         <div className="bc_infos">
                             {[e.author, e.date.slice(0, 10), '개추 '+e.recommended, "댓글 수 "+Object.keys(e.chat).length]
-                            .map(e => {
-                                return <div> {e} </div>
+                            .map((_e, i) => {
+                                return <div key={e+_e}> {_e} </div>
                             }) }
                         </div>
 

@@ -7,10 +7,10 @@ const Navbar = ()=>{
     const navigate = useNavigate();
     const [loggedIn, setLoggedIn] = useState(false);
     const [ cookie, setCookie, removeCooki ] = useCookies(['id']);
-
-    /*
+    
     useEffect(() => {
-        fetch('https://localhost:8080/login/session', {
+        console.log(cookie.id);
+        cookie.id !== undefined && fetch('https://localhost:8080/login/session', {
             method : "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -36,7 +36,11 @@ const Navbar = ()=>{
             console.log(err);
         });
     }, [])
-    */
+    
+
+    useEffect(() => {
+        console.log(cookie.id);
+    }, [])
 
     return (
         <nav className="navbar">

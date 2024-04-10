@@ -173,7 +173,7 @@ function Signup(){
                 "Content-Type": "application/json",
             },
             body : JSON.stringify({
-                "id" : infos.id,
+                "id" : infos.id.toString(),
                 "pss" : infos.pss,
                 "name" : infos.name,
             }),
@@ -218,6 +218,7 @@ function Signup(){
         }
     }, [infos])
 
+
     useEffect(() => {
         if(!isRequired.checkId) return;
         
@@ -228,7 +229,7 @@ function Signup(){
                 "Content-Type": "application/json",
             },
             body : JSON.stringify({
-                "id" : infos.id,
+                "id" : infos.id.toString(),
             }),
             credentials: "include",
         })

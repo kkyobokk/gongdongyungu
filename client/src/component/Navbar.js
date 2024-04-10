@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useMemo} from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useCookies } from 'react-cookie';
 import '../App.css';
@@ -7,6 +7,7 @@ const Navbar = ()=>{
     const navigate = useNavigate();
     const [loggedIn, setLoggedIn] = useState(false);
     const [ cookie, setCookie, removeCooki ] = useCookies(['id']);
+    const [name, setName] = useState(sessionStorage.getItem("name"));
     
     useEffect(() => {
         console.log(cookie.id);
@@ -15,9 +16,9 @@ const Navbar = ()=>{
             headers: {
                 "Content-Type": "application/json",
             },
-            body : {
+            body : JSON.stringify({
                 'id' : cookie.id,
-            },
+            }),
             credentials : "include",
         })
         .then(res => res.json())
@@ -54,7 +55,7 @@ const Navbar = ()=>{
                     <div onClick={() => {navigate("/signup")}} style={{fontSize :"70%"}}> 회원가입 </div>
                     </>
                     :
-                    <div> 환영합니다 </div>
+                    <div> 환영합니다 {name}님</div>
 
                 }
             </div>

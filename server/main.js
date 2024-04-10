@@ -21,7 +21,7 @@ const SHA256 = cryptojs.SHA256;
 
 const sha256 = function(e){
   const req = e.toString();
-  return crypto.createHmac('sha256').update(req, secretKey).digest('base64')
+  return crypto.createHmac('sha256', secretKey).update(req).digest('base64')
           .toString().replace(/[/]/g, '_');
 }
 
@@ -78,8 +78,7 @@ app.post("/login", function (req, res) {
   try {
     const id = sha256(SHA256(req.body.id));
     const pss = sha256(req.body.pss);
-    const Path = path.join(__dirname, 'database', "User", customHash(id), id, 'userInfo.json'); 
-    console.log(id);
+    const Path = path.join(__dirname, 'database', "User", customHash(id), id, 'userInfo.json');
     if(!fs.existsSync(Path)){
       res.json({Err : 4001, ErrMessage : "Invalid Id", LoggedIn : false});
     }
@@ -87,6 +86,8 @@ app.post("/login", function (req, res) {
       fs.readFile(Path, (err, readData) => {
         const data = JSON.parse(readData);
         const salt = data.salt;
+        const name = data.name;
+
         if(err) {
           console.log(err);
           res.json({Err : true, ErrMessage : err, LoggedIn : false})
@@ -113,6 +114,7 @@ app.post("/login", function (req, res) {
             ErrMessage : null, 
             Loggedin : true,
             token : req.body.tokeepLogin ? token : undefined,
+            name : name,
           });
         }
       })
@@ -128,10 +130,11 @@ app.post("/login", function (req, res) {
 
 app.post("/login/session", (req, res) => {
   try {
-    const id = SHA256(req.body.id);
+    const id = sha256(req.body.id);
     const hashid = req.session.hashid;
     const token = req.headers.authorization;
-    const loggedin = req.session.Loggedin && hashid === sha256(id).toString();
+    const loggedin = req.session.Loggedin && hashid === sha256(id).toString(); //sha 2번 SHA 1번
+    
     res.json({Err : false, ErrMessage : null, LoggedIn : loggedin});
   }
   catch(err) {
@@ -144,7 +147,7 @@ app.post("/login/session", (req, res) => {
 
 app.post("/signup/toSignUp", function (req, res) {
   try {
-    const id = sha256(SHA256(req.body.id)).toString(16);
+    const id = sha256(SHA256(req.body.id)).toString(16); //1.SHA256 2.sha256
     const pss = sha256(req.body.pss).toString(16);
     const salt = crypto.randomBytes(64).toString('base64');
     const password = sha256(`${pss}:${salt}`).toString('base64');
@@ -184,6 +187,7 @@ app.post("/signup/toSignUp", function (req, res) {
 
 app.post("/signup/checkId", function(req, res){
   try {
+    console.log(req.body.id)
     const id = sha256(req.body.id).toString(16);
     const dir = customHash(id);
     const isDuplicated = fs.existsSync(path.join(__dirname, "database", "User", dir, id));
@@ -196,12 +200,14 @@ app.post("/signup/checkId", function(req, res){
 });
 
 
-app.post("/getBoard/:query", (req, res) => {
+app.post("/getBoard/:query/:page", (req, res) => {
   const board = req.params.query;
+  const page = req.params.page === "null" ? 1 : req.params.page;
   fs.readdir(path.join(".", "database", "Contents", board), (err, files) => {
     const ret = [];
+    const slicedBoard = files.slice((page-1)*5,page*5)
     if(!err){
-      files.forEach((e) => {
+      slicedBoard.forEach((e) => {
         ret.push(JSON.parse(fs.readFileSync(path.join(".", "database", "Contents", board, e))));
       });
       res.json({Err : false, ErrMessage : "None", contents : ret});
@@ -211,10 +217,29 @@ app.post("/getBoard/:query", (req, res) => {
 });
 
 
+app.post("/getMaxBoard/:query", (req,res) => {
+  const board = req.params.query;
+  fs.readFile(path.join(__dirname,"database","Contents","count.json"),(err,Data)=>{
+    if(err){
+      console.log(err);
+      res.json({
+        Err : true,
+        ErrMessage : err,
+        Reading : false
+      })
+      return;
+    }
+    const data = JSON.parse(Data)
+    res.json({page : data[board]})
+  })
+})
+
+
 app.post("/write/:board", (req, res) => {
   const board = req.params.board;
   const contents = req.body.contents;
   const name = req.body.name;
+  const id = sha256(req.body.id)
   const file = {
     title : contents.title,
     content : contents.body, 
@@ -222,19 +247,53 @@ app.post("/write/:board", (req, res) => {
     recommended : 0, 
     chat : {},
     author : name,
+
   }
 
   fs.writeFile(path.join(".", "database", "Contents", board, `${sha256(JSON.stringify(file))}.json`), 
   JSON.stringify(file), 
   (err) => {
     if(!err){
-      res.json({Err : false, ErrMessage : "None", Written : true});
+      fs.readFile(path.join(__dirname,"database","Contents","count.json"),(err,Data)=>{
+        if(err){
+          console.log(err);
+          res.json({
+            Err : true,
+            ErrMessage : err,
+            Written : false
+          })
+          return;
+        }
+        const data = JSON.parse(Data)
+        data[board] += 1
+        fs.writeFile(path.join(__dirname,"database","Contents","count.json"),JSON.stringify({...data}),(err)=>{
+          if(err){
+            console.log(err);
+            res.json({
+              Err : true,
+              ErrMessage : err,
+              Written : false
+            })
+            return;
+          }
+          else{
+            res.json({
+              Err : false,
+              ErrMessage : null,
+              Written : true
+            })
+            return;
+          }
+        })
+      })
     }
     else {
       console.log(err);
       res.json({Err : true, ErrMessage : err, Written : false});
     }
   });
+
+  // fs.writeFile(path.join(__dirname,"database","User",customHash(id),id,"userData"))
 })
 
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 
 export default function PostBoard(){
     const navigate = useNavigate();
@@ -8,6 +9,8 @@ export default function PostBoard(){
     const nowBoard = query.get('board');
     const [contents, setContents] = useState({title:'', body:''});
     const [require, setRequire] = useState(false);
+    const [name,setName] = useState(sessionStorage.getItem("name"));
+    const [cookie,setCookie,removeCookie] = useCookies(["id"])
     const temp = `#include <stdio.h>
 #include <stdlib.h>
   
@@ -37,15 +40,15 @@ for(int i = 0; i< N; i++)
 
     useEffect(() => {
         if(!require) return;
-        console.log(1);
         fetch(`https://localhost:8080/write/${nowBoard}`, {
             method : "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body : JSON.stringify({
-                "id" : null,
+                "id" : cookie.id,
                 "contents" : contents,
+                "name" : name,
             }),
             credentials : "include",
         })
@@ -60,6 +63,7 @@ for(int i = 0; i< N; i++)
             setRequire(() => false);
             console.log(err)
         });
+        console.log(cookie.id);
 
     }, [require])
 

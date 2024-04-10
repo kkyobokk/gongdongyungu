@@ -59,6 +59,7 @@ const Login = function() {
           setIsRequired(() => false);
         }
         else {
+          sessionStorage.setItem("name",res.name)
           sessionStorage.setItem("loggedin", res.Loggedin)
           localStorage.setItem('token', res.token);
           setCookie('id', SHA256(id).toString());

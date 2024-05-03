@@ -8,7 +8,7 @@ export default function FreePage(){
     const location = useLocation();
     const query = new URLSearchParams(location.search);
     const doWrite = query.get('write');
-    
+
     return (
         <div className="page">
             {

@@ -14,11 +14,24 @@ html {
 body {
   width:100%;
   height:100%;
+  overflow : auto;
   font-family: 'SDSamliphopangche_Outline';
 }
 
 div {
   user-select: none;
+}
+
+textarea {
+  resize : none;
+}
+
+textarea::-webkit-scrollbar {
+  display : none;
+}
+
+::spelling-error {
+  text-decoration: none;
 }
 
 #id {
@@ -175,7 +188,7 @@ div {
 .navbar {
   background-color: #22AADD;
   padding: 10px;
-  height: 50px; 
+  height: 60px; 
   width: 100%;
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   border-radius: 0px 0px 5px 5px;
@@ -198,6 +211,7 @@ div {
   border-radius: 30px;
   margin-left : 1%;
   max-width: 1000px;
+  overflow : auto;
 }
 
 .topSite {
@@ -224,6 +238,7 @@ div {
   height : 100%;
   display : flex;
   background-color: #FFFFFF;
+  overflow : auto;
 }
 
 .boardComponent {
@@ -274,8 +289,9 @@ div {
 display : flex;
 width : 100%;
 height : 100%;
-padding-top : 30px;
+padding-top : 20px;
 flex-direction: column;
+overflow : auto;
 }
 
 .boardNameIndicate {
@@ -292,7 +308,7 @@ flex-direction: column;
 
 .postWrite {
   width : 70%;
-  height : 60%;
+  height : 400px;
   margin : 0 auto;
   resize: none;
   font-size : 18px;
@@ -303,7 +319,7 @@ flex-direction: column;
   width : 70%;
   height : 100px;
   margin : 0 auto;
-  margin-bottom: 50px;
+  margin-bottom: 20px;
   font-size : 25px;
 }
 
@@ -312,4 +328,93 @@ flex-direction: column;
   height : 50px;
   margin : 0 auto;
   font-size : 25px;
+}
+
+.board_header {
+  width : 90%;
+  height : 80px;
+  margin : 0 auto;
+  font-size : 30px;
+  font-weight : 900;
+  border-bottom : #000000 5px solid;
+  text-align: left;
+  padding : 0 20px;
+  display : flex;
+}
+
+.board_title {
+  flex : 9;
+  line-height : 70px;
+}
+
+.board_info {
+  line-height : 35px;
+  font-size : 15px;
+  font-weight : 500;
+  text-align : right;
+  flex : 2;
+}
+
+
+.board_body {
+  width : 90%;
+  height : auto;
+  min-height : 400px;
+  justify-content: center;
+  text-align: left;
+  margin : 0 auto;
+  margin-top : 30px;
+  padding : 0 20px;
+  font-weight : 700;
+}
+
+.board_chat {
+  text-align : left;
+  margin : 0 auto;
+  width : 90%;
+  border-top : 5px solid #000000;
+  margin-top : 20px;
+  padding : 10px;
+  font-weight : 900;
+  margin-bottom : 40px;
+}
+
+.board_chat_head {
+  display : flex;
+  flex-direction: column;
+  gap : 10px;
+  padding-bottom : 10px;
+  border-bottom : 1px solid #000000;
+}
+
+.write_chat {
+  background : none;
+  border-width : 0 0 3px;
+  width : 90%;
+  margin : auto auto;
+  resize : none;
+}
+
+.write_chat:focus {
+  outline : none;
+  border-bottom: #000000 3px solid;
+}
+
+
+.post_chat {
+  border-radius: 30px;
+  width : 70px;
+  margin-left : auto;
+}
+
+.board_chat_ele {
+  width : 100%;
+  border-bottom : #000000 solid 1px;
+  height : auto;
+  padding : 13px;
+}
+
+.chat_ele_content {
+  font-weight : 500;
+  margin : 10px 0 0 20px;
 }

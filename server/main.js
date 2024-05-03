@@ -25,9 +25,23 @@ const sha256 = function(e){
           .toString().replace(/[/]/g, '_');
 }
 
+const aes = {
+  encryption : (data) => {
+    const encryptedData = cryptojs.AES.encrypt(data.toString(), secretKey).toString();
+    return encryptedData;
+  },
+  decryption : (data) => {
+    const decryptedData = cryptojs.AES.decrypt(data.toString(), secretKey).toString(cryptojs.enc.Utf8);
+    return decryptedData;
+  }
+}
+
 const customHash = function(e){
   return e.slice(0, 2).toUpperCase()
 }
+
+// const a = aes.encryption(111);
+// console.log(aes.decryption(a));
 
 
 const app = express();
@@ -141,7 +155,7 @@ app.post("/login/session", (req, res) => {
     console.log(err);
     res.json({Err : true, ErrMessage : err, LoggedIn : false})
   }
-})
+});
 
 
 
@@ -206,13 +220,25 @@ app.post("/getBoard/:query/:page", (req, res) => {
   fs.readdir(path.join(".", "database", "Contents", board), (err, files) => {
     const ret = [];
     const slicedBoard = files.slice((page-1)*5,page*5)
-    if(!err){
-      slicedBoard.forEach((e) => {
-        ret.push(JSON.parse(fs.readFileSync(path.join(".", "database", "Contents", board, e))));
-      });
-      res.json({Err : false, ErrMessage : "None", contents : ret});
+    try{
+      if(!err){
+        slicedBoard.forEach((e) => {
+          const data = JSON.parse(fs.readFileSync(path.join(".", "database", "Contents", board, e)));
+          const idx = data.header;
+          idx.hash = encodeURIComponent(aes.encryption(e));
+          idx.chatNumber = data.chat.length;
+          ret.push(idx);
+        });
+        res.json({Err : false, ErrMessage : "None", contents : ret});
+      }
+      else res.json({Err : true, ErrMessage : err, contents : []});
     }
-    else res.json({Err : true, ErrMessage : err, contents : []});
+    catch(err){
+      console.log(err);
+      res.json({Err : true, ErrMessage : "None", contents : []});
+    }
+    
+
   })
 });
 
@@ -232,7 +258,7 @@ app.post("/getMaxBoard/:query", (req,res) => {
     const data = JSON.parse(Data)
     res.json({page : data[board]})
   })
-})
+});
 
 
 app.post("/write/:board", (req, res) => {
@@ -240,40 +266,34 @@ app.post("/write/:board", (req, res) => {
   const contents = req.body.contents;
   const name = req.body.name;
   const id = sha256(req.body.id)
+  const date = new Date();
   const file = {
-    title : contents.title,
+    header : {
+      title : contents.title,
+      date : date, 
+      recommended : 0, 
+      author : name,
+    },
     content : contents.body, 
-    date : new Date(), 
-    recommended : 0, 
-    chat : {},
-    author : name,
-
+    chat : [],
   }
 
-  fs.writeFile(path.join(".", "database", "Contents", board, `${sha256(JSON.stringify(file))}.json`), 
+  fs.writeFile(path.join(__dirname, "database", "Contents", board, `${Number(date).toString(16)}&${sha256(JSON.stringify(file))}.json`), 
   JSON.stringify(file), 
   (err) => {
     if(!err){
       fs.readFile(path.join(__dirname,"database","Contents","count.json"),(err,Data)=>{
         if(err){
           console.log(err);
-          res.json({
-            Err : true,
-            ErrMessage : err,
-            Written : false
-          })
+          res.json({Err : true, ErrMessage : err, Written : false });
           return;
         }
-        const data = JSON.parse(Data)
-        data[board] += 1
+        const data = JSON.parse(Data);
+        data[board] += 1;
         fs.writeFile(path.join(__dirname,"database","Contents","count.json"),JSON.stringify({...data}),(err)=>{
           if(err){
             console.log(err);
-            res.json({
-              Err : true,
-              ErrMessage : err,
-              Written : false
-            })
+            res.json({Err : true, ErrMessage : err, Written : false });
             return;
           }
           else{
@@ -294,6 +314,68 @@ app.post("/write/:board", (req, res) => {
   });
 
   // fs.writeFile(path.join(__dirname,"database","User",customHash(id),id,"userData"))
+});
+
+
+app.post("/get/:bQuery/:bId", (req, res) => {
+  const board = req.params.bQuery;
+  const bId = aes.decryption(req.params.bId);
+  const Path = path.join(__dirname, 'database', 'Contents', board, bId);
+  //console.log('board Id :', Path);
+  if(!['free', 'quest', 'report'].includes(board) || !fs.existsSync(Path)){
+    console.log("Invalid Board");
+    res.json({Err:true, ErrMessage:"Invalid Board", Gotten : false});
+    return;
+  }
+  fs.readFile(Path, (err, readData) => {
+    if(!err){
+      const data = JSON.parse(readData);
+      //console.log(data);
+      res.json({Err : false, ErrMessage:"None", Gotten:true,
+        Board : data});
+      return;
+    }
+    else {
+      res.json({Err:true, ErrMessage:err, Gotten:false});
+      console.log(err);
+      return;
+    }
+
+  });
+});
+
+
+
+app.post("/write/chat/:board/:bId", (req, res) => {
+  const board = req.params.board;
+  const bId = aes.decryption(req.params.bId);
+  const Path = path.join(__dirname, 'database', 'Contents', board, bId);
+  const appendingChat = {
+    author : req.body.author,
+    content : req.body.chat,
+    timestamp : new Date(),
+  };
+  fs.readFile(Path, (err, rData) => {
+    if(!err){
+      const data = JSON.parse(rData);
+      data.chat.push(appendingChat);
+      console.log(appendingChat);
+      fs.writeFile(Path,JSON.stringify(data), err => {
+        if(!err) {
+          res.json({Err : false, ErrMessage : "None", Written : true});
+        }
+        else {
+          console.log(err);
+          res.json({Err : true, Errmessage : err, Written : false});
+        }
+      })
+    }
+    else {
+      console.log(err);
+      res.json({Err : true, ErrMessage : err, Written : false});
+    }
+
+  })
 })
 
 

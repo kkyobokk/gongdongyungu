@@ -10,35 +10,33 @@ export default function PostBoard(){
     const [contents, setContents] = useState({title:'', body:''});
     const [require, setRequire] = useState(false);
     const [name,setName] = useState(sessionStorage.getItem("name"));
-    const [cookie,setCookie,removeCookie] = useCookies(["id"])
-    const temp = `#include <stdio.h>
-#include <stdlib.h>
-  
-int main(void){
-int N;
-scanf("%d", &N);
-for(int i = 0; i< N; i++) 
-}`;
+    const [loggedin, setLoggedin] = useState(sessionStorage.getItem("loggedin"));
+    const [cookie,setCookie,removeCookie] = useCookies(["id"]);
 
     const getTitle = useCallback(e => {
         setContents(() => {return{...contents, title : e.target.value};})
     }, [contents]);
 
     const getBody = useCallback(e => {
-        console.log(e.target.value);
+        //console.log(e.target.value);
         setContents(() => {return{...contents, body : e.target.value};})
     }, [contents]);
 
-    const postContents = () => {
+    const postContents = useCallback(() => {
         if(!require){
             setRequire(() => true);
         }
         else {
             alert("Please Wait for a moment");
         }
-    }
+    }, [require]);
 
     useEffect(() => {
+        if(!loggedin) {
+            alert("Invalid Access");
+            navigate(-1);
+            return;
+        }
         if(!require) return;
         fetch(`https://localhost:8080/write/${nowBoard}`, {
             method : "POST",
@@ -55,21 +53,25 @@ for(int i = 0; i< N; i++)
         .then(res => res.json())
         .then(res => {
             if(res.Written){
-                alert("Writeing Success");
+                alert("Writing Success");
                 navigate(`/test?board=${nowBoard}`);
+            }
+            else {
+                alert("Writing Failed");
+                setRequire(() => false);
             }
         })
         .catch(err => {
             setRequire(() => false);
-            console.log(err)
+            console.err(err)
         });
-        console.log(cookie.id);
+        //console.log(cookie.id);
 
     }, [require])
 
     return (
         <div className="loadPage" >
-            <div className="center" style={{marginTop : "30px", textAlign:"left", width : "80%", height : "80%"}}>
+            <div className="center" style={{marginTop : "0", textAlign:"left", width : "80%", height : "89%"}}>
                 <label className="postWrite_label">
                     제목 <input onChange={getTitle} className="postWrite_title" placeholder="제목을 입력해주세요"></input></label>
                 <textarea onChange={getBody} className="postWrite" placeholder="Invaild Access">

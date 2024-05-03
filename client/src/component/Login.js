@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
-import { Button } from 'react-bootstrap';
 import { SHA256 } from 'crypto-js';
 import '../App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';

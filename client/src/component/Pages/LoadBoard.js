@@ -111,7 +111,7 @@ export default function LoadBoard() {
 
 
     return (
-        <div className="center" style={{width : "98%", margin : "0 auto", height : "98%", overflow:"scroll", display:"block"}}>
+        <div className="center" style={{width : "98%", margin : "0 auto", height : "98%", overflow:"scroll", display:"block",backgroundColor : "#FFFFFF"}}>
             {board !== null ? <>
             <div className="board_header"> 
                 <div className="board_title">{board.header.title} </div>
@@ -140,7 +140,7 @@ export default function LoadBoard() {
                 }
                 </div>
                 {board.chat.map(e => 
-                <div className="board_chat_ele">
+                <div className="board_chat_ele" key={e.hash}>
                     <div className="chat_ele_author">
                         {e.author}
                     </div>

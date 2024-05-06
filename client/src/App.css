@@ -197,11 +197,12 @@ textarea::-webkit-scrollbar {
 .navlist {
   /* 수평 배치 */
   color : #EFEFEF;
-  font-size : 120%;
+  font-size : 130%;
   font-weight : 700;
   float: left; 
   padding-left :1%;
   margin-Left: 1%;
+  text-decoration: none;
 }
 
 .site {

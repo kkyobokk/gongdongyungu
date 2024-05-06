@@ -13,7 +13,8 @@ export default function LoadPage(){
     const [require, setRequire] = useState({
         getBoard : false,
     })
-    const [gotoBoard, setGotoBoard] = useState(null);
+    //const [gotoBoard, setGotoBoard] = useState(null);
+
     const boardName = useCallback({
         free : "자유 게시판",
         quest : "질문 게시판",
@@ -21,8 +22,8 @@ export default function LoadPage(){
     }, []);
 
     const getBoard = useCallback((e) => {
-        console.log(e.target.dataset.id);
-        console.log(e.target);
+        //console.log(e.target.dataset.id);
+        //console.log(e.target);
         if(require.getBoard === false){
             setRequire(() => {
                 const res = {...require, getBoard : e.target.dataset.id};
@@ -51,13 +52,16 @@ export default function LoadPage(){
         .then((res) => res.json())
         .then((res) => {
             setMaxPage(() => res.maxPage);
-        });
+        })
+        .catch(err=> { 
+            console.err(err);
+        })
         console.log(maxPage);
     }, [])
 
     useEffect(() => {
         if(!['free', 'report', 'quest', null].includes(nowBoard())) {
-            console.log(nowBoard());
+            //console.log(nowBoard());
             alert("Invaild Access");
             navigate('/test');
             return;
@@ -72,7 +76,7 @@ export default function LoadPage(){
         })
         .then((res) => res.json())
         .then((res) => {
-            console.log("Res", res);
+            //console.log("Res", res);
             setBoard(() => res.contents.sort((e,t) => {
                 return new Date(t.date)-new Date(e.date)
             }));
@@ -103,9 +107,9 @@ export default function LoadPage(){
             </div>
             {
                 [...board].map((e,i) => {
-                    console.log(e);
+                    //console.log(e);
                     return (
-                    <div className="boardComponent" key = {`${e.title}`}
+                    <div className="boardComponent" key = {`${e.hash}`}
                     data-id = {i}
                     onClick={getBoard}
                     ref={e => Ref.current[i] = e}>

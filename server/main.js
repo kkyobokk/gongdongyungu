@@ -358,6 +358,7 @@ app.post("/write/chat/:board/:bId", (req, res) => {
   fs.readFile(Path, (err, rData) => {
     if(!err){
       const data = JSON.parse(rData);
+      appendingChat.hash = sha256(appendingChat);
       data.chat.push(appendingChat);
       console.log(appendingChat);
       fs.writeFile(Path,JSON.stringify(data), err => {

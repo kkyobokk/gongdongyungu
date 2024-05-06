@@ -35,7 +35,7 @@ export default function BundlePage(){
 
     
     useEffect(()=>{
-        console.log(query.get('board'));
+        //console.log(query.get('board'));
     }, [])
 
     return (

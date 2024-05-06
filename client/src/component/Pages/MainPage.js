@@ -1,5 +1,5 @@
-import React from 'react';
-import {} from 'react-router-dom';
+import React, {useState, useCallback} from 'react';
+import { Link } from 'react-router-dom';
 import '../../App.css';
 
 export default function MainPage(){
